@@ -288,9 +288,13 @@ sub words {
   
   # Sort the words by count and let N number of words through, based on $self->{word_count}
   my $word_count = 1;
-  foreach my $word (map { lc } sort { $words{$b} <=> $words{$a} } keys %words) {
+  foreach my $word (sort { $words{$b} <=> $words{$a} } keys %words) {
   	last if $word_count > $self->{word_count};
   	
+	# Only lowercase if we weren't given a hashref.  If it's a hashref and we
+	# lowercase words that weren't already, the count below won't be matched.
+	$word = lc($word) unless ref($arg1) eq 'HASH';
+
   	my $count = $words{$word};
   	
   	if ($word_count == 1) {
